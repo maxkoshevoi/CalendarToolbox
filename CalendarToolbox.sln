@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalendarToolbox.Android", "CalendarToolbox\CalendarToolbox.Android\CalendarToolbox.Android.csproj", "{4CCB0A5E-9BDF-460C-A069-EA9736FB5443}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalendarToolbox", "CalendarToolbox\CalendarToolbox\CalendarToolbox.csproj", "{F3131554-AD3E-43C0-B26A-38288CDF4447}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4CCB0A5E-9BDF-460C-A069-EA9736FB5443}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CCB0A5E-9BDF-460C-A069-EA9736FB5443}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CCB0A5E-9BDF-460C-A069-EA9736FB5443}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{4CCB0A5E-9BDF-460C-A069-EA9736FB5443}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CCB0A5E-9BDF-460C-A069-EA9736FB5443}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CCB0A5E-9BDF-460C-A069-EA9736FB5443}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{F3131554-AD3E-43C0-B26A-38288CDF4447}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3131554-AD3E-43C0-B26A-38288CDF4447}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3131554-AD3E-43C0-B26A-38288CDF4447}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{F3131554-AD3E-43C0-B26A-38288CDF4447}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3131554-AD3E-43C0-B26A-38288CDF4447}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3131554-AD3E-43C0-B26A-38288CDF4447}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {300224F5-BF66-454C-A2D5-2C24B0DAE137}
+	EndGlobalSection
+EndGlobal

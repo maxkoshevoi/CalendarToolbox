@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CalendarToolbox.Views.CalendarDetailPage"
+             Title="{Binding Calendar.Name}"
+             Appearing="ContentPage_Appearing">
+
+    <StackLayout Spacing="15" Padding="15">
+        <StackLayout>
+            <Label Text="Account name:" FontSize="Medium" />
+            <Label Text="{Binding Calendar.AccountName}" FontSize="Small"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal">
+            <Label Text="External ID:" FontSize="Medium" />
+            <Label Text="{Binding Calendar.ExternalID}" FontSize="Medium"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal">
+            <Label Text="Color:" FontSize="Medium" />
+            <Label Text="{Binding Calendar.Color}" FontSize="Medium" TextColor="{Binding Calendar.Color}"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal">
+            <Label Text="Can edit calendar:" FontSize="Medium" />
+            <CheckBox IsChecked="{Binding Calendar.CanEditCalendar}" IsEnabled="False" />
+        </StackLayout>
+        <StackLayout Orientation="Horizontal">
+            <Label Text="Can edit events:" FontSize="Medium" />
+            <CheckBox IsChecked="{Binding Calendar.CanEditEvents}" IsEnabled="False" />
+        </StackLayout>
+        <StackLayout Orientation="Horizontal">
+            <Button Text="Edit" Command="{Binding EditCommand}" HorizontalOptions="FillAndExpand" />
+            <Button Text="Delete" Command="{Binding DeleteCommand}" HorizontalOptions="FillAndExpand" />
+        </StackLayout>
+    </StackLayout>
+    
+</ContentPage>
