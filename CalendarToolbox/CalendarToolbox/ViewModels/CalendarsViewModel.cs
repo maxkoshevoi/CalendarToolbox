@@ -25,9 +25,7 @@ namespace CalendarToolbox.ViewModels
             Title = "Calendars";
             Items = new ObservableCollection<Calendar>();
             LoadItemsCommand = new Command(async () => await LoadItems());
-
             ItemTapped = new Command<Calendar>(OnItemSelected);
-
             AddItemCommand = new Command(OnAddItem);
         }
 
@@ -54,15 +52,22 @@ namespace CalendarToolbox.ViewModels
             }
         }
 
+        public bool isClosing = false;
         public async void OnAppearing()
         {
+            if (isClosing)
+            {
+                return;
+            }
+
             IsBusy = true;
             SelectedItem = null;
 
             bool isHavePermissions = await GetPermissions();
             if (!isHavePermissions)
             {
-                // await App.Current.MainPage.DisplayAlert("Calendar permission", "Unable to get calendar read/write permission.", "Ok");
+                isClosing = true;
+                await App.Current.MainPage.DisplayAlert("Calendar permission", "Unable to get calendar read/write permission.", "Ok");
                 Environment.Exit(0);
             }
         }
