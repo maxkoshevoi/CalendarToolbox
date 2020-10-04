@@ -13,10 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <Compile Update="Themes\DarkTheme.xaml.cs">
+      <DependentUpon>DarkTheme.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Themes\LightTheme.xaml.cs">
+      <DependentUpon>LightTheme.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\CalendarDetailPage.xaml.cs">
       <DependentUpon>CalendarDetailPage.xaml</DependentUpon>
     </Compile>
@@ -26,5 +28,11 @@
     <Compile Update="Views\NewCalendarPage.xaml.cs">
       <DependentUpon>NewCalendarPage.xaml</DependentUpon>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Themes\LightTheme.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
