@@ -1,4 +1,5 @@
-﻿using Android.OS;
+﻿using Android.Graphics;
+using Android.OS;
 using Android.Views;
 using CalendarToolbox.Droid.Dependences;
 using CalendarToolbox.Models.InterplatformCommunication;
@@ -21,7 +22,8 @@ namespace CalendarToolbox.Droid.Dependences
             {
                 var currentWindow = GetCurrentWindow();
                 SetStatusBarIsLight(currentWindow, false);
-                currentWindow.SetStatusBarColor(Android.Graphics.Color.ParseColor(hexColor));
+                currentWindow.SetStatusBarColor(Color.ParseColor(hexColor));
+                currentWindow.SetNavigationBarColor(Color.ParseColor(hexColor));
             });
         }
 
@@ -36,7 +38,8 @@ namespace CalendarToolbox.Droid.Dependences
             {
                 var currentWindow = GetCurrentWindow();
                 SetStatusBarIsLight(currentWindow, true);
-                currentWindow.SetStatusBarColor(Android.Graphics.Color.White);
+                currentWindow.SetStatusBarColor(Color.White);
+                currentWindow.SetNavigationBarColor(Color.White);
             });
         }
 
@@ -45,12 +48,12 @@ namespace CalendarToolbox.Droid.Dependences
             if ((int)Build.VERSION.SdkInt < 30)
             {
 #pragma warning disable CS0618 // Type or member is obsolete. Using new API for Sdk 30+
-                currentWindow.DecorView.SystemUiVisibility = isLight ? (StatusBarVisibility)SystemUiFlags.LightStatusBar : 0;
+                currentWindow.DecorView.SystemUiVisibility = isLight ? (StatusBarVisibility)(SystemUiFlags.LightStatusBar | SystemUiFlags.LightNavigationBar) : 0;
 #pragma warning restore CS0618 // Type or member is obsolete
             }
             else
             {
-                WindowInsetsControllerAppearance lightStatusBars = isLight ? WindowInsetsControllerAppearance.LightStatusBars : 0;
+                WindowInsetsControllerAppearance lightStatusBars = isLight ? WindowInsetsControllerAppearance.LightStatusBars | WindowInsetsControllerAppearance.LightNavigationBars : 0;
                 currentWindow.InsetsController?.SetSystemBarsAppearance((int)lightStatusBars, (int)lightStatusBars);
             }
         }

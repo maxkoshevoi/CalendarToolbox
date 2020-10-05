@@ -11,7 +11,7 @@ namespace CalendarToolbox.Helpers
         {
             var statusBarManager = DependencyService.Get<IStatusBarStyleManager>();
             ICollection<ResourceDictionary> mergedDictionaries = Application.Current.Resources.MergedDictionaries;
-            if (mergedDictionaries == null)
+            if (mergedDictionaries is null)
             {
                 return false;
             }
