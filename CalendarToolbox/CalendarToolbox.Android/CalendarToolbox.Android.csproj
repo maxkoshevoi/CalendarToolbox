@@ -115,4 +115,24 @@
     </AndroidResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+  <!-- Added to provide autoamtic build number of android package -->
+  <Target Name="BeforeBuild">
+    <XmlPeek XmlInputPath="Properties\AndroidManifest.xml" Namespaces="&lt;Namespace Prefix='android' Uri='http://schemas.android.com/apk/res/android' /&gt;" Query="manifest/@android:versionCode">
+      <Output TaskParameter="Result" ItemName="PeekedVersionCode" />
+    </XmlPeek>
+    <XmlPeek XmlInputPath="Properties\AndroidManifest.xml" Namespaces="&lt;Namespace Prefix='android' Uri='http://schemas.android.com/apk/res/android' /&gt;" Query="manifest/@android:versionName">
+      <Output TaskParameter="Result" ItemName="PeekedVersionName" />
+    </XmlPeek>
+    <PropertyGroup>
+      <OldBuildNumber>@(PeekedVersionCode)</OldBuildNumber>
+      <NewBuildNumber>$([MSBuild]::Add($(OldBuildNumber), 1))</NewBuildNumber>
+      <RealNewBuildNumber>$([MSBuild]::Subtract($(NewBuildNumber), 0))</RealNewBuildNumber>
+      <OldVersion>@(PeekedVersionName)</OldVersion>
+      <NewVersion>$(OldVersion.Remove($(OldVersion.LastIndexOf('.')))).$(RealNewBuildNumber)</NewVersion>
+    </PropertyGroup>
+    <XmlPoke XmlInputPath="Properties\AndroidManifest.xml" Namespaces="&lt;Namespace Prefix='android' Uri='http://schemas.android.com/apk/res/android' /&gt;" Query="manifest/@android:versionCode" Value="$(NewBuildNumber)" />
+    <XmlPoke XmlInputPath="Properties\AndroidManifest.xml" Namespaces="&lt;Namespace Prefix='android' Uri='http://schemas.android.com/apk/res/android' /&gt;" Query="manifest/@android:versionName" Value="$(NewVersion)" />
+    <Message Importance="High" Text="Build number: $(NewBuildNumber)" />
+    <Message Importance="High" Text="Version: $(NewVersion)" />
+  </Target>
 </Project>
