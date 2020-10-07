@@ -106,16 +106,13 @@ namespace CalendarToolbox.ViewModels
                 // Getting permissions
                 readStatus = await Permissions.CheckStatusAsync<Permissions.CalendarRead>();
                 writeStatus = await Permissions.CheckStatusAsync<Permissions.CalendarWrite>();
-                if (readStatus != PermissionStatus.Granted || writeStatus != PermissionStatus.Granted)
+                if (readStatus != PermissionStatus.Granted)
                 {
-                    await MainThread.InvokeOnMainThreadAsync(async () =>
-                    {
-                        readStatus = await Permissions.RequestAsync<Permissions.CalendarRead>();
-                        if (readStatus == PermissionStatus.Granted)
-                        {
-                            writeStatus = await Permissions.RequestAsync<Permissions.CalendarWrite>();
-                        }
-                    });
+                    readStatus = await MainThread.InvokeOnMainThreadAsync(Permissions.RequestAsync<Permissions.CalendarRead>);
+                }
+                if (writeStatus != PermissionStatus.Granted && readStatus == PermissionStatus.Granted)
+                {
+                    writeStatus = await MainThread.InvokeOnMainThreadAsync(Permissions.RequestAsync<Permissions.CalendarWrite>);
                 }
 
                 if (readStatus != PermissionStatus.Granted || writeStatus != PermissionStatus.Granted)
