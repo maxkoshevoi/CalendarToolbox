@@ -2,7 +2,6 @@
 using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
-using Plugin.CurrentActivity;
 
 namespace CalendarToolbox.Droid
 {
@@ -18,7 +17,6 @@ namespace CalendarToolbox.Droid
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            CrossCurrentActivity.Current.Init(this, savedInstanceState);
             LoadApplication(new App());
         }
 

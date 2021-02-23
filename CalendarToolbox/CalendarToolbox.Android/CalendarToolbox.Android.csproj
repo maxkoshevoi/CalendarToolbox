@@ -65,11 +65,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Plugin.CurrentActivity">
-      <Version>2.1.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="4.8.0.1451" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.5.3.2" />
+    <PackageReference Include="Xamarin.CommunityToolkit" Version="1.0.3" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dependences\StatusBarStyleManager.cs" />
@@ -78,6 +76,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidAsset Include="Assets\materialdesignicons-webfont.ttf" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
@@ -120,19 +119,17 @@
     <XmlPeek XmlInputPath="Properties\AndroidManifest.xml" Namespaces="&lt;Namespace Prefix='android' Uri='http://schemas.android.com/apk/res/android' /&gt;" Query="manifest/@android:versionCode">
       <Output TaskParameter="Result" ItemName="PeekedVersionCode" />
     </XmlPeek>
-    <XmlPeek XmlInputPath="Properties\AndroidManifest.xml" Namespaces="&lt;Namespace Prefix='android' Uri='http://schemas.android.com/apk/res/android' /&gt;" Query="manifest/@android:versionName">
-      <Output TaskParameter="Result" ItemName="PeekedVersionName" />
-    </XmlPeek>
     <PropertyGroup>
       <OldBuildNumber>@(PeekedVersionCode)</OldBuildNumber>
       <NewBuildNumber>$([MSBuild]::Add($(OldBuildNumber), 1))</NewBuildNumber>
       <RealNewBuildNumber>$([MSBuild]::Subtract($(NewBuildNumber), 0))</RealNewBuildNumber>
-      <OldVersion>@(PeekedVersionName)</OldVersion>
-      <NewVersion>$(OldVersion.Remove($(OldVersion.LastIndexOf('.')))).$(RealNewBuildNumber)</NewVersion>
     </PropertyGroup>
     <XmlPoke XmlInputPath="Properties\AndroidManifest.xml" Namespaces="&lt;Namespace Prefix='android' Uri='http://schemas.android.com/apk/res/android' /&gt;" Query="manifest/@android:versionCode" Value="$(NewBuildNumber)" />
-    <XmlPoke XmlInputPath="Properties\AndroidManifest.xml" Namespaces="&lt;Namespace Prefix='android' Uri='http://schemas.android.com/apk/res/android' /&gt;" Query="manifest/@android:versionName" Value="$(NewVersion)" />
     <Message Importance="High" Text="Build number: $(NewBuildNumber)" />
-    <Message Importance="High" Text="Version: $(NewVersion)" />
   </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties TriggeredFromHotReload="False" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

@@ -1,39 +1,53 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
              x:Class="CalendarToolbox.Views.CalendarsPage"
-             Title="{Binding Title}"
-             xmlns:local="clr-namespace:CalendarToolbox.ViewModels"
+             xmlns:vm="clr-namespace:CalendarToolbox.ViewModels"
+             xmlns:fonts="clr-namespace:CalendarToolbox.Models.Consts"
              xmlns:model="clr-namespace:Plugin.Calendars.Abstractions;assembly=Plugin.Calendars.Abstractions"
-             x:Name="BrowseItemsPage">
+             x:Name="BrowseItemsPage"
+             Title="{Binding Title}">
+
+    <ContentPage.Behaviors>
+        <xct:EventToCommandBehavior x:DataType="vm:CalendarsViewModel" EventName="Appearing" Command="{Binding PageAppearingCommand}"/>
+    </ContentPage.Behaviors>
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" />
     </ContentPage.ToolbarItems>
-    <!--
-      x:DataType enables compiled bindings for better performance and compile time validation of binding expressions.
-      https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/data-binding/compiled-bindings
-    -->
-    <RefreshView x:DataType="local:CalendarsViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+
+    <RefreshView x:DataType="vm:CalendarsViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
         <CollectionView x:Name="ItemsListView"
                 ItemsSource="{Binding Items}"
                 SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <StackLayout Padding="10" x:DataType="model:Calendar">
-                        <Label Text="{Binding Name}" LineBreakMode="NoWrap" FontSize="16" />
-                        <Label Text="{Binding AccountName}" 
-                            LineBreakMode="NoWrap"
-                            Style="{DynamicResource ListItemDetailTextStyle}"
-                            FontSize="13" />
-                        <StackLayout.GestureRecognizers>
-                            <TapGestureRecognizer 
-                                NumberOfTapsRequired="1"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:CalendarsViewModel}}, Path=ItemTapped}"		
+                    <Grid Padding="10" x:DataType="model:Calendar">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackLayout Grid.Column="0">
+                            <Label Text="{Binding Name}" LineBreakMode="NoWrap" FontSize="16" />
+                            <Label Text="{Binding AccountName}" 
+                                Style="{DynamicResource ListItemDetailTextStyle}"
+                                FontSize="13" />
+                        </StackLayout>
+                        <Image Grid.Column="1" 
+                               Margin="5"
+                               VerticalOptions="CenterAndExpand"
+                               Source="{FontImageSource Glyph={Static fonts:MaterialIconsFont.PencilOutline}, Size=17, FontFamily={StaticResource MaterialFontFamily}, Color={DynamicResource ListIconColor}}" 
+                               IsVisible="{Binding CanEditCalendar}"/>
+
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CalendarsViewModel}}, Path=ItemTapped}"		
                                 CommandParameter="{Binding .}">
                             </TapGestureRecognizer>
-                        </StackLayout.GestureRecognizers>
-                    </StackLayout>
+                        </Grid.GestureRecognizers>
+                    </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

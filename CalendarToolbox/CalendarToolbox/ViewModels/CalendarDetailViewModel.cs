@@ -1,7 +1,9 @@
-﻿using CalendarToolbox.Services;
+﻿using System;
+using CalendarToolbox.Helpers;
+using CalendarToolbox.Services;
 using CalendarToolbox.Views;
+using Microsoft.AppCenter.Crashes;
 using Plugin.Calendars.Abstractions;
-using System;
 using Xamarin.Forms;
 
 namespace CalendarToolbox.ViewModels
@@ -9,35 +11,21 @@ namespace CalendarToolbox.ViewModels
     [QueryProperty(nameof(CalendarId), nameof(CalendarId))]
     public class CalendarDetailViewModel : BaseViewModel
     {
-        private string calendarId;
-        public string CalendarId 
-        { 
-            get => calendarId; 
-            set 
-            { 
-                if (value != null)
-                {
-                    SetProperty(ref calendarId, value);
-                }
-            } 
-        }
         public IDataStore<Calendar> Calendars { get; } = DependencyService.Get<IDataStore<Calendar>>();
+
+        private string calendarId;
+        public string CalendarId { get => calendarId; set { SetProperty(ref calendarId, value); OnCalendarIdChanged(); } }
 
         private Calendar calendar;
         public Calendar Calendar { get => calendar; set => SetProperty(ref calendar, value); }
 
-        public Command EditCommand { get; set; }
-        public Command DeleteCommand { get; set; }
+        public Command EditCommand { get; }
+        public Command DeleteCommand { get; }
 
         public CalendarDetailViewModel()
         {
-            EditCommand = new Command(OpenEditCalendarPage, () => Calendar?.CanEditCalendar ?? false);
-            DeleteCommand = new Command(DeleteCalendar, () => Calendar?.CanEditCalendar ?? false);
-        }
-
-        public void OnAppearing()
-        {
-            OnCalendarIdChanged();
+            EditCommand = CommandHelper.Create(OpenEditCalendarPage, () => Calendar?.CanEditCalendar == true);
+            DeleteCommand = CommandHelper.Create(DeleteCalendar, () => Calendar?.CanEditCalendar == true);
         }
 
         private async void OpenEditCalendarPage()
@@ -60,7 +48,8 @@ namespace CalendarToolbox.ViewModels
             }
             catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Failed to Load Item", ex.ToString(), "Ok");
+                Crashes.TrackError(ex);
+                await Shell.Current.CurrentPage.DisplayAlert("Failed to load calendar", ex.ToString(), "Ok");
                 await Shell.Current.GoToAsync("..");
                 return;
             }

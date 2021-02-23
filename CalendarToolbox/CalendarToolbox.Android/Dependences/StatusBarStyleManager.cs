@@ -3,7 +3,6 @@ using Android.OS;
 using Android.Views;
 using CalendarToolbox.Droid.Dependences;
 using CalendarToolbox.Models.InterplatformCommunication;
-using Plugin.CurrentActivity;
 using Xamarin.Essentials;
 
 [assembly: Xamarin.Forms.Dependency(typeof(StatusBarStyleManager))]
@@ -60,7 +59,7 @@ namespace CalendarToolbox.Droid.Dependences
 
         private Window GetCurrentWindow()
         {
-            Window window = CrossCurrentActivity.Current.Activity.Window;
+            Window window = Platform.CurrentActivity.Window;
             window.ClearFlags(WindowManagerFlags.TranslucentStatus);
             window.AddFlags(WindowManagerFlags.DrawsSystemBarBackgrounds);
             return window;

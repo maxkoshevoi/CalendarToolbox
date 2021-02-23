@@ -1,8 +1,7 @@
-﻿using Plugin.Calendars;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Xamarin.Essentials;
+using Plugin.Calendars;
 using Calendars = Plugin.Calendars.Abstractions;
 
 namespace CalendarToolbox.Services
@@ -42,7 +41,7 @@ namespace CalendarToolbox.Services
 
         public async Task<Calendars.Calendar> GetAsync(string id, bool forceRefresh = false)
         {
-            if (items is null || forceRefresh)
+            if (items == null || forceRefresh)
             {
                 await GetAllAsync(forceRefresh);
             }
@@ -54,7 +53,7 @@ namespace CalendarToolbox.Services
         {
             if (forceRefresh)
             {
-                items = await MainThread.InvokeOnMainThreadAsync(CrossCalendars.Current.GetCalendarsAsync);
+                items = await CrossCalendars.Current.GetCalendarsAsync();
             }
 
             return items;

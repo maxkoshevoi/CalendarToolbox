@@ -1,32 +1,38 @@
-﻿using CalendarToolbox.Services;
-using CalendarToolbox.Views;
-using Plugin.Calendars.Abstractions;
-using System;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
-using Xamarin.Essentials;
+using CalendarToolbox.BL;
+using CalendarToolbox.Helpers;
+using CalendarToolbox.Services;
+using CalendarToolbox.Views;
+using Microsoft.AppCenter.Crashes;
+using Plugin.Calendars.Abstractions;
+using Xamarin.CommunityToolkit.ObjectModel;
 using Xamarin.Forms;
 
 namespace CalendarToolbox.ViewModels
 {
     public class CalendarsViewModel : BaseViewModel
     {
-        private Calendar _selectedItem; 
         public IDataStore<Calendar> Calendars { get; } = DependencyService.Get<IDataStore<Calendar>>();
 
-        public ObservableCollection<Calendar> Items { get; }
-        public Command LoadItemsCommand { get; }
-        public Command AddItemCommand { get; }
+        public ObservableRangeCollection<Calendar> Items { get; } = new();
+
+        private Calendar _selectedItem;
+        public Calendar SelectedItem { get => _selectedItem; set => SetProperty(ref _selectedItem, value, onChanged: () => OnItemSelected(value)); }
+
+        public IAsyncCommand LoadItemsCommand { get; }
+        public IAsyncCommand AddItemCommand { get; }
         public Command<Calendar> ItemTapped { get; }
+        public Command PageAppearingCommand { get; }
 
         public CalendarsViewModel()
         {
             Title = "Calendars";
-            Items = new ObservableCollection<Calendar>();
-            LoadItemsCommand = new Command(async () => await LoadItems());
-            ItemTapped = new Command<Calendar>(OnItemSelected);
-            AddItemCommand = new Command(OnAddItem);
+            PageAppearingCommand = CommandHelper.Create(OnAppearing);
+            LoadItemsCommand = CommandHelper.Create(LoadItems);
+            ItemTapped = CommandHelper.Create<Calendar>(OnItemSelected);
+            AddItemCommand = CommandHelper.Create(async () => await Shell.Current.GoToAsync(nameof(NewCalendarPage)));
         }
 
         async Task LoadItems()
@@ -35,16 +41,15 @@ namespace CalendarToolbox.ViewModels
 
             try
             {
-                Items.Clear();
-                var items = await Calendars.GetAllAsync(true);
-                foreach (var item in items)
-                {
-                    Items.Add(item);
-                }
+                var calendars = await Calendars.GetAllAsync(true);
+                Items.ReplaceRange(calendars
+                    .OrderBy(c => !c.CanEditCalendar)
+                    .ThenBy(c => c.Name)
+                    .ThenBy(c => c.AccountName));
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                Crashes.TrackError(ex);
             }
             finally
             {
@@ -63,69 +68,23 @@ namespace CalendarToolbox.ViewModels
             IsBusy = true;
             SelectedItem = null;
 
-            bool isHavePermissions = await GetPermissions();
+            bool isHavePermissions = await CalendarService.RequestPermissions();
             if (!isHavePermissions)
             {
                 isClosing = true;
-                await App.Current.MainPage.DisplayAlert("Calendar permission", "Unable to get calendar read/write permission.", "Ok");
+                await Shell.Current.CurrentPage.DisplayAlert("Calendar permission", "Unable to get calendar read/write permission.", "Ok");
                 Environment.Exit(0);
             }
         }
 
-        public Calendar SelectedItem
-        {
-            get => _selectedItem;
-            set
-            {
-                SetProperty(ref _selectedItem, value);
-                OnItemSelected(value);
-            }
-        }
-
-        private async void OnAddItem(object obj)
-        {
-            await Shell.Current.GoToAsync(nameof(NewCalendarPage));
-        }
-
         async void OnItemSelected(Calendar item)
         {
-            if (item is null)
+            if (item == null)
             {
                 return;
             }
 
             await Shell.Current.GoToAsync($"{nameof(CalendarDetailPage)}?{nameof(CalendarDetailViewModel.CalendarId)}={item.ExternalID}");
-        }
-
-        private async Task<bool> GetPermissions()
-        {
-            PermissionStatus? readStatus = null;
-            PermissionStatus? writeStatus = null;
-            try
-            {
-                // Getting permissions
-                readStatus = await Permissions.CheckStatusAsync<Permissions.CalendarRead>();
-                writeStatus = await Permissions.CheckStatusAsync<Permissions.CalendarWrite>();
-                if (readStatus != PermissionStatus.Granted)
-                {
-                    readStatus = await MainThread.InvokeOnMainThreadAsync(Permissions.RequestAsync<Permissions.CalendarRead>);
-                }
-                if (writeStatus != PermissionStatus.Granted && readStatus == PermissionStatus.Granted)
-                {
-                    writeStatus = await MainThread.InvokeOnMainThreadAsync(Permissions.RequestAsync<Permissions.CalendarWrite>);
-                }
-
-                if (readStatus != PermissionStatus.Granted || writeStatus != PermissionStatus.Granted)
-                {
-                    return false;
-                }
-            }
-            catch
-            {
-                return false;
-            }
-
-            return true;
         }
     }
 }

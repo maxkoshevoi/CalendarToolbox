@@ -9,9 +9,9 @@ using Android.App;
 [assembly: AssemblyTitle("CalendarToolbox.Android")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("WhiteBox")]
 [assembly: AssemblyProduct("CalendarToolbox.Android")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyCopyright("Copyright © Maksym Koshovyi 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
@@ -27,4 +27,3 @@ using Android.App;
 
 // Add some common permissions, these can be removed if not needed
 [assembly: UsesPermission(Android.Manifest.Permission.Internet)]
-[assembly: UsesPermission(Android.Manifest.Permission.WriteExternalStorage)]

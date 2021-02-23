@@ -15,4 +15,6 @@
     <Color x:Key="PrimaryTextColor">WhiteSmoke</Color>
     <Color x:Key="SecondaryTextColor">#d1d1d1</Color>
     <Color x:Key="TertiaryTextColor">#dedede</Color>
+
+    <Color x:Key="ListIconColor">#a1a1a1</Color>
 </ResourceDictionary>

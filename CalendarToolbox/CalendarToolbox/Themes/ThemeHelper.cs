@@ -1,9 +1,8 @@
 ﻿using CalendarToolbox.Models.InterplatformCommunication;
-using CalendarToolbox.Themes;
 using System.Collections.Generic;
 using Xamarin.Forms;
 
-namespace CalendarToolbox.Helpers
+namespace CalendarToolbox.Themes
 {
     class ThemeHelper
     {
@@ -11,7 +10,7 @@ namespace CalendarToolbox.Helpers
         {
             var statusBarManager = DependencyService.Get<IStatusBarStyleManager>();
             ICollection<ResourceDictionary> mergedDictionaries = Application.Current.Resources.MergedDictionaries;
-            if (mergedDictionaries is null)
+            if (mergedDictionaries == null)
             {
                 return false;
             }
