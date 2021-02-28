@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CalendarToolbox.Helpers;
 using CalendarToolbox.Services;
 using Microsoft.AppCenter.Crashes;
@@ -11,24 +12,25 @@ namespace CalendarToolbox.ViewModels
     [QueryProperty(nameof(CalendarId), nameof(CalendarId))]
     public class NewCalendarViewModel : BaseViewModel
     {
-        private string calendarId;
-        public string CalendarId { get => calendarId; set => SetProperty(ref calendarId, value, onChanged: OnCalendarIdChanged); }
-        private Calendar calendar = new();
         public IDataStore<Calendar> Calendars { get; } = DependencyService.Get<IDataStore<Calendar>>();
 
-        public string calendarName;
-        public string CalendarName { get => calendarName; set => SetProperty(ref calendarName, value, onChanged: SaveCommand.ChangeCanExecute); }
+        private string calendarId;
+        public string CalendarId { get => calendarId; set => SetProperty(ref calendarId, value, onChanged: async () => await OnCalendarIdChanged()); }
+        private Calendar calendar = new();
 
-        public Command SaveCommand { get; }
+        public string calendarName;
+        public string CalendarName { get => calendarName; set => SetProperty(ref calendarName, value, onChanged: SaveCommand.RaiseCanExecuteChanged); }
+
+        public IAsyncCommand SaveCommand { get; }
         public IAsyncCommand CancelCommand { get; }
 
         public NewCalendarViewModel()
         {
-            SaveCommand = CommandHelper.Create(OnSave, () => !string.IsNullOrWhiteSpace(CalendarName));
+            SaveCommand = CommandHelper.Create(OnSave, () => !string.IsNullOrWhiteSpace(CalendarName), allowsMultipleExecutions: false);
             CancelCommand = CommandHelper.Create(async () => await Shell.Current.GoToAsync(".."));
         }
 
-        private async void OnSave()
+        private async Task OnSave()
         {
             calendar.Name = CalendarName;
             if (string.IsNullOrEmpty(CalendarId))
@@ -43,7 +45,7 @@ namespace CalendarToolbox.ViewModels
             await Shell.Current.GoToAsync("..");
         }
 
-        public async void OnCalendarIdChanged()
+        public async Task OnCalendarIdChanged()
         {
             try
             {

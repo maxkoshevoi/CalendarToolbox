@@ -7,11 +7,7 @@
              xmlns:fonts="clr-namespace:CalendarToolbox.Models.Consts"
              xmlns:model="clr-namespace:Plugin.Calendars.Abstractions;assembly=Plugin.Calendars.Abstractions"
              x:Name="BrowseItemsPage"
-             Title="{Binding Title}">
-
-    <ContentPage.Behaviors>
-        <xct:EventToCommandBehavior x:DataType="vm:CalendarsViewModel" EventName="Appearing" Command="{Binding PageAppearingCommand}"/>
-    </ContentPage.Behaviors>
+             Title="Calendars">
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" />

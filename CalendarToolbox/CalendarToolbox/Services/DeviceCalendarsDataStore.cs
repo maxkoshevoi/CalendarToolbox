@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using CalendarToolbox.BL;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Plugin.Calendars;
 using Calendars = Plugin.Calendars.Abstractions;
 
 namespace CalendarToolbox.Services
@@ -12,7 +12,7 @@ namespace CalendarToolbox.Services
 
         public async Task<bool> AddAsync(Calendars.Calendar customCalendar)
         {
-            await CrossCalendars.Current.AddOrUpdateCalendarAsync(customCalendar);
+            await CalendarService.AddOrUpdateCalendarAsync(customCalendar);
             items.Add(customCalendar);
 
             return true;
@@ -20,7 +20,7 @@ namespace CalendarToolbox.Services
 
         public async Task<bool> UpdateAsync(Calendars.Calendar calendar)
         {
-            await CrossCalendars.Current.AddOrUpdateCalendarAsync(calendar);
+            await CalendarService.AddOrUpdateCalendarAsync(calendar);
 
             var oldItem = items.Where(c => c.ExternalID == calendar.ExternalID).Single();
             items.Remove(oldItem);
@@ -34,26 +34,22 @@ namespace CalendarToolbox.Services
             var oldItem = items.Where(c => c.ExternalID == id).Single();
             items.Remove(oldItem);
 
-            await CrossCalendars.Current.DeleteCalendarAsync(oldItem);
+            await CalendarService.DeleteCalendarAsync(oldItem);
 
             return true;
         }
 
         public async Task<Calendars.Calendar> GetAsync(string id, bool forceRefresh = false)
         {
-            if (items == null || forceRefresh)
-            {
-                await GetAllAsync(forceRefresh);
-            }
-
+            await GetAllAsync(forceRefresh);
             return items.SingleOrDefault(s => s.ExternalID == id);
         }
 
         public async Task<IEnumerable<Calendars.Calendar>> GetAllAsync(bool forceRefresh = false)
         {
-            if (forceRefresh)
+            if (forceRefresh || items == null)
             {
-                items = await CrossCalendars.Current.GetCalendarsAsync();
+                items = await CalendarService.GetCalendarsAsync();
             }
 
             return items;

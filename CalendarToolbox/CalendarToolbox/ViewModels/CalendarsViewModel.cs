@@ -24,20 +24,26 @@ namespace CalendarToolbox.ViewModels
         public IAsyncCommand LoadItemsCommand { get; }
         public IAsyncCommand AddItemCommand { get; }
         public Command<Calendar> ItemTapped { get; }
-        public Command PageAppearingCommand { get; }
 
         public CalendarsViewModel()
         {
-            Title = "Calendars";
-            PageAppearingCommand = CommandHelper.Create(OnAppearing);
+            IsBusy = true;
+
             LoadItemsCommand = CommandHelper.Create(LoadItems);
             ItemTapped = CommandHelper.Create<Calendar>(OnItemSelected);
-            AddItemCommand = CommandHelper.Create(async () => await Shell.Current.GoToAsync(nameof(NewCalendarPage)));
+            AddItemCommand = CommandHelper.Create(async () => await Shell.Current.GoToAsync(nameof(NewCalendarPage)), allowsMultipleExecutions: false);
         }
 
         async Task LoadItems()
         {
             IsBusy = true;
+
+            if (!await CalendarService.RequestPermissionsAsync())
+            {
+                await Shell.Current.CurrentPage.DisplayAlert("Calendar permission", "Unable to get calendar read/write permission.", "Ok");
+                Environment.Exit(0);
+                return;
+            }
 
             try
             {
@@ -54,26 +60,6 @@ namespace CalendarToolbox.ViewModels
             finally
             {
                 IsBusy = false;
-            }
-        }
-
-        public bool isClosing = false;
-        public async void OnAppearing()
-        {
-            if (isClosing)
-            {
-                return;
-            }
-
-            IsBusy = true;
-            SelectedItem = null;
-
-            bool isHavePermissions = await CalendarService.RequestPermissions();
-            if (!isHavePermissions)
-            {
-                isClosing = true;
-                await Shell.Current.CurrentPage.DisplayAlert("Calendar permission", "Unable to get calendar read/write permission.", "Ok");
-                Environment.Exit(0);
             }
         }
 
