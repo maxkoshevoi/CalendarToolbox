@@ -9,6 +9,10 @@
              x:Name="BrowseItemsPage"
              Title="Calendars">
 
+    <ContentPage.Behaviors>
+        <xct:EventToCommandBehavior x:DataType="vm:CalendarsViewModel" EventName="Appearing" Command="{Binding PageAppearingCommand}"/>
+    </ContentPage.Behaviors>
+
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" />
     </ContentPage.ToolbarItems>

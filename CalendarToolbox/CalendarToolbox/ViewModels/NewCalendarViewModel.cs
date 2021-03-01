@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CalendarToolbox.Helpers;
-using CalendarToolbox.Services;
 using Microsoft.AppCenter.Crashes;
 using Plugin.Calendars.Abstractions;
 using Xamarin.CommunityToolkit.ObjectModel;
@@ -12,8 +11,6 @@ namespace CalendarToolbox.ViewModels
     [QueryProperty(nameof(CalendarId), nameof(CalendarId))]
     public class NewCalendarViewModel : BaseViewModel
     {
-        public IDataStore<Calendar> Calendars { get; } = DependencyService.Get<IDataStore<Calendar>>();
-
         private string calendarId;
         public string CalendarId { get => calendarId; set => SetProperty(ref calendarId, value, onChanged: async () => await OnCalendarIdChanged()); }
         private Calendar calendar = new();
