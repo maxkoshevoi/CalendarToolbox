@@ -10,10 +10,10 @@ namespace CalendarToolbox.Services
     {
         private IList<Calendars.Calendar> items;
 
-        public async Task<bool> AddAsync(Calendars.Calendar customCalendar)
+        public async Task<bool> AddAsync(Calendars.Calendar calendar)
         {
-            await CalendarService.AddOrUpdateCalendarAsync(customCalendar);
-            items.Add(customCalendar);
+            await CalendarService.AddOrUpdateCalendarAsync(calendar);
+            items.Add(calendar);
 
             return true;
         }
@@ -22,7 +22,7 @@ namespace CalendarToolbox.Services
         {
             await CalendarService.AddOrUpdateCalendarAsync(calendar);
 
-            var oldItem = items.Where(c => c.ExternalID == calendar.ExternalID).Single();
+            var oldItem = items.Single(c => c.ExternalID == calendar.ExternalID);
             items.Remove(oldItem);
             items.Add(calendar);
 
@@ -31,7 +31,7 @@ namespace CalendarToolbox.Services
 
         public async Task<bool> DeleteAsync(string id)
         {
-            var oldItem = items.Where(c => c.ExternalID == id).Single();
+            var oldItem = items.Single(c => c.ExternalID == id);
             items.Remove(oldItem);
 
             await CalendarService.DeleteCalendarAsync(oldItem);
